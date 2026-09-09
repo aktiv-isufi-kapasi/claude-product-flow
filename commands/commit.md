@@ -45,11 +45,24 @@ Task #<task_id>, <Task Name>
 
 ## Rules
 
-- **Functional language only** — describe what users or the system can now do, not what code changed.
-  - Good: "Components marked as optional can now be driven by compatibility rules"
-  - Bad: "Added `is_optional` boolean field to `cpq.component.configuration`"
-- Subject line should be concise but descriptive. It can wrap to a second line if needed.
-- Bullet points explain behavior changes, not implementation details.
+**Subject line:**
+- Keep it short — one clear line, under 72 characters. Do not wrap to a second line unless absolutely unavoidable.
+- Functional first — describe the outcome, not the mechanism.
+- Good: `Allow optional components to be driven by compatibility rules`
+- Bad: `Add is_optional field to cpq.component.configuration and update apply_component_rules method`
+
+**Bullet points:**
+- Write what the user or system can now do — not what code was touched.
+- A non-technical person should be able to read it and understand what changed.
+- Never mention: method names, field names, model names, file names, Python/JS syntax.
+- Exception: if the change is purely technical with no functional equivalent (e.g. a performance fix or internal refactor), one technical bullet is acceptable — keep it plain English.
+- Good: `Components hidden from the CPQ screen are now also removed from the BoM when a rule hides them`
+- Bad: `Updated action_done override to call super() before setting exclude_from_cpq_screen`
+
+**General:**
+- **Never use em dashes (`—`)** anywhere in the commit message. Use `:` or `-` instead.
 - Module versions come strictly from `__manifest__.py` — never modify them.
 - Omit the `Task #` footer line entirely if no task ID is provided.
 - If multiple modules are affected, list all with their versions separated by `, `.
+- When in doubt between functional and technical: always choose functional.
+- Length: keep it short when the change is simple. When a feature has multiple distinct behaviors or options, explain each clearly — do not artificially shorten. Quality over brevity.
