@@ -6,6 +6,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 mkdir -p "$COMMANDS_DIR"
 
+# Remove links to skills that no longer exist in this repo
+for link in "$COMMANDS_DIR/"*.md; do
+    [ -L "$link" ] || continue
+    target=$(readlink "$link")
+    if [[ "$target" == "$SCRIPT_DIR/commands/"* && ! -e "$target" ]]; then
+        rm "$link"
+        filename=$(basename "$link")
+        echo "Removed: /${filename%.md}"
+    fi
+done
+
 for file in "$SCRIPT_DIR/commands/"*.md; do
     filename=$(basename "$file")
     ln -sf "$file" "$COMMANDS_DIR/$filename"

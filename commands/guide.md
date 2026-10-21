@@ -21,12 +21,24 @@ Display the following reference guide exactly:
 | Exploring a feature idea before deciding | `/research` |
 | Mapping how a decided feature fits the product | `/flow` |
 | Moving a feature from one version to another | `/sync` |
+| Core module updated, sub-module needs to catch up | `/compatible` |
 
 ### When finishing work
 | Situation | Skill |
 |---|---|
 | Generating a commit message | `/commit` |
 | Updating context files after development | `/doc` |
+| Writing up the day's work for a timesheet | `/timesheet` |
+
+### When you need something from the client
+| Situation | Skill |
+|---|---|
+| Drafting a message asking the client for information or a decision | `/query` |
+
+### When you forget
+| Situation | Skill |
+|---|---|
+| Not sure which skill fits | `/guide` |
 
 ---
 
@@ -40,7 +52,7 @@ Have a task
   → /dev            describe your task — AI clarifies if needed, then builds
 
 Done with task
-  → /doc            update feature context file
+  → /doc            update context file
   → /commit         generate commit message
 ```
 
@@ -55,6 +67,11 @@ Done with task
 
 - `/research` — you're still exploring, haven't decided what to build yet
 - `/flow` — decision is made, now map how it fits the product
+
+## When to use /query
+
+- Work is blocked on something only the client can answer, or an assumption had to be made and they should confirm it
+- Collects the open questions from the session, drops anything we can answer ourselves, and drafts one message in the client's language
 
 ---
 

@@ -34,7 +34,7 @@ Load the product context first, understand what the product does, then proactive
 - Products ship features daily. What was true yesterday may have changed today.
 - Search across: apps (App Store / Play Store reviews), product websites, competitor feature pages, industry blogs, YouTube demos, Reddit/ProductHunt discussions.
 - When referencing a product feature, always verify it exists right now via a live search — do not assume.
-- Use `deep-research` for deep dives when the user wants comprehensive coverage of a specific idea.
+- When the user wants comprehensive coverage of a specific idea, go deep: run several targeted searches (competitors, reviews, docs, discussions) and cross-check each claim against more than one source.
 
 ## Conversation Style
 

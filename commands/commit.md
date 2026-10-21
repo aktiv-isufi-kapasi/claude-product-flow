@@ -21,7 +21,9 @@ Generate a structured commit message based on the current git changes.
 
 6. Ask: "Task name? (Enter to skip)"
 
-7. Generate the commit message and present it for review.
+7. Work out the current and expected behaviour from the diff: the removed or changed code shows what happens today, the new code shows what happens after the change. If the current behaviour is not clear from the diff or the session, ask: "What happens today, before this change?" Never guess it.
+
+8. Generate the commit message and present it for review.
 
 ## Commit Message Format
 
@@ -29,8 +31,12 @@ Generate a structured commit message based on the current git changes.
 ```
 [TYPE] #<task_id> | module[version], module[version]: <Short description>
 
-- <Functional bullet point>
-- <Functional bullet point>
+Current Behaviour:
+- <What happens before this change>
+
+Expected Behaviour:
+- <What happens after this change>
+- <What happens after this change>
 
 Task #<task_id>, <Task Name>
 ```
@@ -39,8 +45,11 @@ Task #<task_id>, <Task Name>
 ```
 [TYPE] module[version], module[version]: <Short description>
 
-- <Functional bullet point>
-- <Functional bullet point>
+Current Behaviour:
+- <What happens before this change>
+
+Expected Behaviour:
+- <What happens after this change>
 ```
 
 ## Rules
@@ -58,6 +67,21 @@ Task #<task_id>, <Task Name>
 - Exception: if the change is purely technical with no functional equivalent (e.g. a performance fix or internal refactor), one technical bullet is acceptable — keep it plain English.
 - Good: `Components hidden from the CPQ screen are now also removed from the BoM when a rule hides them`
 - Bad: `Updated action_done override to call super() before setting exclude_from_cpq_screen`
+
+**Current Behaviour / Expected Behaviour:**
+- Every commit body has both sections, in this order, so the exact issue and its resolution can be read straight from the commit.
+- `Current Behaviour:` is what the user or system sees today, before this change. For `[FIX]` / `[HOTFIX]` it is the problem itself; for `[ADD]` / `[IMP]` it is the gap or limitation.
+- `Expected Behaviour:` is what the user or system sees once this change is in. It replaces the plain bullet list: same functional rules as above.
+- Be specific enough to reproduce: name the screen, action and condition (e.g. "When a rule hides a component, it still appears in the BoM after confirming the sale order").
+- `[REL]` commits may skip both sections and list the released items instead.
+- Example:
+  ```
+  Current Behaviour:
+  - Components hidden by a rule still appear in the BoM after the sale order is confirmed
+
+  Expected Behaviour:
+  - Components hidden by a rule are removed from the BoM as well as from the CPQ screen
+  ```
 
 **General:**
 - **Never use em dashes (`—`)** anywhere in the commit message. Use `:` or `-` instead.

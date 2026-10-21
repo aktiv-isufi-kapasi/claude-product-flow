@@ -25,14 +25,14 @@ New skills are automatically installed via a post-merge hook — no extra steps 
 
 ```
 New chat
-  -> /start         load module context
+  → /start          load module context
 
 Have a task
-  -> /dev           describe your task — AI clarifies if needed, then builds
+  → /dev            describe your task — AI clarifies if needed, then builds
 
 Done with task
-  -> /doc           update context file
-  -> /commit        generate commit message
+  → /doc            update context file
+  → /commit         generate commit message
 ```
 
 ---
@@ -44,6 +44,7 @@ Done with task
 | Skill | When to use |
 |---|---|
 | `/start` | Opening a new chat to work on a module |
+| `/scaffold` | Module has no folder structure yet |
 | `/guide` | Forgot which skill to use — shows full reference |
 
 ### Doing a Task
@@ -53,7 +54,7 @@ Done with task
 | `/dev` | Any development task — feature, bug, change |
 | `/research` | Exploring a feature idea before deciding — searches live, never from memory |
 | `/flow` | Decision is made — map how the feature fits the product flow |
-| `/sync` | Moving a feature from one version to another (e.g. v18 -> v19) |
+| `/sync` | Moving a feature from one version to another (e.g. v18 → v19) |
 | `/compatible` | Check and fix sub-module compatibility after core module is updated |
 
 ### Finishing Work
@@ -62,6 +63,13 @@ Done with task
 |---|---|
 | `/doc` | Update module context file after development is done |
 | `/commit` | Generate a structured, functional commit message from current changes |
+| `/timesheet` | Write up a day's work as timesheet entries, from the commits and the session |
+
+### Talking to the Client
+
+| Skill | When to use |
+|---|---|
+| `/query` | Draft a message asking the client for the information or decision that is holding work up |
 
 ---
 
