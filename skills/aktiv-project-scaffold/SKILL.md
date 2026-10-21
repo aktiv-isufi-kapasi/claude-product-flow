@@ -1,3 +1,8 @@
+---
+name: aktiv-project-scaffold
+description: "Set up the folder structure for a module — creates feature-level directories with context, interface, and test files. Designed for QA-first usage: each feature gets its own context and test file so sessions stay focused and token usage stays low."
+---
+
 Set up the folder structure for a module — creates feature-level directories with context, interface, and test files. Designed for QA-first usage: each feature gets its own context and test file so sessions stay focused and token usage stays low.
 
 ## Steps
@@ -127,7 +132,7 @@ Set up the folder structure for a module — creates feature-level directories w
    Next steps:
    1. Fill _overview.md with module purpose
    2. Fill context.md for each feature you are actively working on
-   3. Run /doc after each development session to keep context current
+   3. Run /aktiv-project-doc after each development session to keep context current
    4. Fill tests.md per feature before QA begins
    ```
 

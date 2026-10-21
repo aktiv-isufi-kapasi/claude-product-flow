@@ -1,3 +1,8 @@
+---
+name: aktiv-feature-flow
+description: "Map a decided feature into the existing product flow — functionally only. No technical implementation details. The goal is a clear functional picture of where the feature fits and how it changes the user experience."
+---
+
 Map a decided feature into the existing product flow — functionally only. No technical implementation details. The goal is a clear functional picture of where the feature fits and how it changes the user experience.
 
 ## Steps

@@ -1,3 +1,8 @@
+---
+name: aktiv-module-sync
+description: "Sync a feature from one version of a module to another. This is feature-based sync, not code migration — the same functionality may need to be implemented differently depending on each version's architecture."
+---
+
 Sync a feature from one version of a module to another. This is feature-based sync, not code migration — the same functionality may need to be implemented differently depending on each version's architecture.
 
 ## Steps

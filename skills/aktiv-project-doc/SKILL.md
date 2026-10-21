@@ -1,3 +1,8 @@
+---
+name: aktiv-project-doc
+description: "Update the module context file after development is completed. Current state only — no changelogs, no history, no bug fix references. Only how the module works right now."
+---
+
 Update the module context file after development is completed. Current state only — no changelogs, no history, no bug fix references. Only how the module works right now.
 
 ## Steps

@@ -1,3 +1,8 @@
+---
+name: aktiv-market-research
+description: "Explore and validate product feature ideas by researching how real products solve similar problems. This is a conversational, open-ended research companion — not a formal report generator."
+---
+
 Explore and validate product feature ideas by researching how real products solve similar problems. This is a conversational, open-ended research companion — not a formal report generator.
 
 ## Behavior

@@ -1,3 +1,8 @@
+---
+name: aktiv-project-dev
+description: "Single entry point for any development task. Accepts any input — detailed or thin — and ensures all required information is captured before work begins. Validates both functional and technical completeness. Reduces back-and-forth by asking only what is missing, in one shot."
+---
+
 Single entry point for any development task. Accepts any input — detailed or thin — and ensures all required information is captured before work begins. Validates both functional and technical completeness. Reduces back-and-forth by asking only what is missing, in one shot.
 
 ## Steps

@@ -1,3 +1,8 @@
+---
+name: aktiv-git-commit
+description: "Generate a structured commit message based on the current git changes."
+---
+
 Generate a structured commit message based on the current git changes.
 
 ## Steps

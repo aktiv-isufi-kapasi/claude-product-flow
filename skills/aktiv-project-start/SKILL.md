@@ -1,3 +1,8 @@
+---
+name: aktiv-project-start
+description: "Load the module context before starting any work."
+---
+
 Load the module context before starting any work.
 
 ## Steps
@@ -30,7 +35,7 @@ Load the module context before starting any work.
      ```
    - **Yes** — Read fully. Summarize purpose and key areas in 3–5 bullet points.
    - **No** — Ask for correct path. Read and summarize.
-   - **Don't have one** — Acknowledge and continue. Suggest `/scaffold` to set up structure.
+   - **Don't have one** — Acknowledge and continue. Suggest `/aktiv-project-scaffold` to set up structure.
 
 5. Ask about reference or dependency modules:
    ```

@@ -1,3 +1,8 @@
+---
+name: aktiv-pms-timesheet
+description: "Generate timesheet entries for a given day from the user's git commits and the work done in the session. One entry per feature, written for a reviewer, not a developer."
+---
+
 Generate timesheet entries for a given day from the user's git commits and the work done in the session. One entry per feature, written for a reviewer, not a developer.
 
 ## Steps

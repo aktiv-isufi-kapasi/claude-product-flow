@@ -1,26 +1,34 @@
 #!/bin/bash
 set -e
 
+SKILLS_DIR="$HOME/.claude/skills"
 COMMANDS_DIR="$HOME/.claude/commands"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-mkdir -p "$COMMANDS_DIR"
+mkdir -p "$SKILLS_DIR"
 
-# Remove links to skills that no longer exist in this repo
-for link in "$COMMANDS_DIR/"*.md; do
+# Remove links to skills that no longer exist in this repo (renamed or deleted),
+# including the old single-file commands in ~/.claude/commands/
+for link in "$SKILLS_DIR/"* "$COMMANDS_DIR/"*.md; do
     [ -L "$link" ] || continue
     target=$(readlink "$link")
-    if [[ "$target" == "$SCRIPT_DIR/commands/"* && ! -e "$target" ]]; then
+    if [[ "$target" == "$SCRIPT_DIR/"* && ! -e "$target" ]]; then
         rm "$link"
-        filename=$(basename "$link")
-        echo "Removed: /${filename%.md}"
+        name=$(basename "$link")
+        echo "Removed: /${name%.md}"
     fi
 done
 
-for file in "$SCRIPT_DIR/commands/"*.md; do
-    filename=$(basename "$file")
-    ln -sf "$file" "$COMMANDS_DIR/$filename"
-    echo "Installed: /${filename%.md}"
+for skill in "$SCRIPT_DIR/skills/"*/; do
+    [ -f "$skill/SKILL.md" ] || continue
+    name=$(basename "$skill")
+    target="$SKILLS_DIR/$name"
+    if [ -e "$target" ] && [ ! -L "$target" ]; then
+        echo "Skipped: /$name (a skill with this name already exists in $SKILLS_DIR and is not managed by this repo)"
+        continue
+    fi
+    ln -sfn "${skill%/}" "$target"
+    echo "Installed: /$name"
 done
 
 # Install post-merge hook so git pull auto-installs new skills
@@ -35,5 +43,5 @@ EOF
 chmod +x "$HOOK_FILE"
 
 echo ""
-echo "Done. Restart Claude Code to activate the commands."
+echo "Done. Restart Claude Code to activate the skills."
 echo "Future 'git pull' will auto-install new skills."

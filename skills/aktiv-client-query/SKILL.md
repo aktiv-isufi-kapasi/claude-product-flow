@@ -1,3 +1,8 @@
+---
+name: aktiv-client-query
+description: "Draft a message to the client asking for the information or decisions we need. Written for the client to read and answer quickly, not for a developer."
+---
+
 Draft a message to the client asking for the information or decisions we need. Written for the client to read and answer quickly, not for a developer.
 
 ## Steps

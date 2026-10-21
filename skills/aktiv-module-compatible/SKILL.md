@@ -1,3 +1,8 @@
+---
+name: aktiv-module-compatible
+description: "Check and resolve compatibility between a sub-module and its updated core/base module. Covers both functional and technical changes — overridden methods, removed methods, new conditions, new features. Goal: both modules work correctly together after this session."
+---
+
 Check and resolve compatibility between a sub-module and its updated core/base module. Covers both functional and technical changes — overridden methods, removed methods, new conditions, new features. Goal: both modules work correctly together after this session.
 
 ## Steps
@@ -119,7 +124,7 @@ Add this line to the sub-module's context `.md` file to enable auto-detection:
 Core compatibility: ak_odoo_cpq 18.0.5.18.11
 ```
 
-This is updated automatically by `/compatible` after each successful compatibility session.
+This is updated automatically by `/aktiv-module-compatible` after each successful compatibility session.
 
 ## Rules
 
