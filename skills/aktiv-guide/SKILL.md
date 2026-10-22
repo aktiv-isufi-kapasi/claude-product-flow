@@ -39,6 +39,7 @@ Display the following reference guide exactly:
 | Situation | Skill |
 |---|---|
 | Generating a commit message | `/aktiv-git-commit` |
+| Releasing a task from dev to staging or production (git only, never copy folders) | `/aktiv-git-release` |
 | Updating context files after development | `/aktiv-project-doc` |
 | Writing up the day's work for a timesheet | `/aktiv-pms-timesheet` |
 

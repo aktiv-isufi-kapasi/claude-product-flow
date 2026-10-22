@@ -39,6 +39,7 @@ Names follow `aktiv-<area>-<skill>`; the areas are listed in the README's "Skill
 | Task | `/aktiv-studio-module` | Data-only module for Odoo Online (Import Module, no custom Python) |
 | Finish | `/aktiv-project-doc` | Update the module context file to current state only |
 | Finish | `/aktiv-git-commit` | Structured, functional commit message (Current Behaviour / Expected Behaviour) with module versions from `__manifest__.py` |
+| Release | `/aktiv-git-release` | Release only one task's / user story's commits from dev to a target: release branch + cherry-pick -x, staging merges, production rebases onto latest production first, then `--no-ff` merge; verifies task files match dev; never pushes |
 | Finish | `/aktiv-pms-timesheet` | Timesheet entries for a day, grouped by feature, from git commits and the session |
 | Client | `/aktiv-client-query` | Draft a client-facing message for the information or decisions we need |
 

@@ -13,7 +13,7 @@ This README is the user manual: how to install, the ideas the skills share, and 
 - [Skill manual](#skill-manual)
   - Starting work: [/aktiv-project-start](#aktiv-project-start) · [/aktiv-project-scaffold](#aktiv-project-scaffold) · [/aktiv-guide](#aktiv-guide)
   - Doing a task: [/aktiv-project-dev](#aktiv-project-dev) · [/aktiv-market-research](#aktiv-market-research) · [/aktiv-feature-flow](#aktiv-feature-flow) · [/aktiv-module-sync](#aktiv-module-sync) · [/aktiv-module-compatible](#aktiv-module-compatible)
-  - Finishing work: [/aktiv-project-doc](#aktiv-project-doc) · [/aktiv-git-commit](#aktiv-git-commit) · [/aktiv-pms-timesheet](#aktiv-pms-timesheet)
+  - Finishing work: [/aktiv-project-doc](#aktiv-project-doc) · [/aktiv-git-commit](#aktiv-git-commit) · [/aktiv-git-release](#aktiv-git-release) · [/aktiv-pms-timesheet](#aktiv-pms-timesheet)
   - Discovery and specs: [/aktiv-project-scope-analysis](#aktiv-project-scope-analysis) · [/aktiv-project-user-story](#aktiv-project-user-story)
   - Odoo Online: [/aktiv-studio-module](#aktiv-studio-module)
   - Talking to the client: [/aktiv-client-query](#aktiv-client-query)
@@ -128,6 +128,7 @@ Core compatibility: ak_odoo_cpq 18.0.5.18.11
 | Update a sub-module after its core module changed | `/aktiv-module-compatible` |
 | Record what the module does now, after development | `/aktiv-project-doc` |
 | Write the commit message | `/aktiv-git-commit` |
+| Release a task from dev to staging or production | `/aktiv-git-release` |
 | Fill in your timesheet | `/aktiv-pms-timesheet` |
 | Ask the client for something that blocks you | `/aktiv-client-query` |
 | Turn client material (SOW, spec, wireframes) into a gap analysis | `/aktiv-project-scope-analysis` |
@@ -400,6 +401,53 @@ Task #4521, CPQ hide rule fixes
 
 **Rules it follows:** subject under 72 characters and about the outcome. Bullets in plain language a non-developer understands, with no method, field, model or file names. No em dashes. Versions taken exactly from `__manifest__.py`.
 
+#### /aktiv-git-release
+
+Releases one task or user story from dev to staging or production **through git only**, so nothing is copied by hand and no file gets left behind. Only the commits for that task are released, even if dev has other unreleased work.
+
+**Use it:** every time code goes from dev to staging or production. Never copy module folders between branches or servers.
+
+**It asks:**
+1. Repository directory. It stops if there are uncommitted changes.
+2. Source branch (Enter = `dev`), target branch, and the task ID(s) or user story number(s), e.g. `4521` or `US-05`.
+3. Whether the target is staging (merge only) or production (rebase onto latest production, then merge).
+
+**What happens:**
+1. **Finds the task's commits** on dev that aren't on the target yet, by the task ID in the commit message (`#4521` in the subject or `Task #4521` in the footer, as `/aktiv-git-commit` writes them) or the user story number. Commits already released are skipped.
+2. **Checks dependencies:** it lists other dev commits that touch the same files. These are the files that would otherwise go missing. You choose to include them, leave them out, or stop.
+3. **Shows the plan** (commits, files, versions) and waits for your OK.
+4. **Builds `release/<target>-<id>`** from the latest target and applies only those commits, each one recording the dev commit it came from. If there's a conflict, it stops and asks; it never resolves conflicts silently.
+5. **Production only:** rebases the release branch onto the latest production. **Staging:** no rebase.
+6. **Verifies:** every task file is identical to dev, no other files changed, module versions look right, and Python and XML files load.
+7. **Merges** the release branch into the target with `--no-ff` and a `[REL]` message.
+
+**You get:** the release merged on your local target branch, **not pushed**. Review it, then push yourself:
+```
+Release ready on local `production` (not pushed).
+Review, then push yourself:
+  git push origin production
+After pushing, the release branch can be deleted:
+  git branch -d release/production-4521
+```
+
+**Example plan:**
+```
+Release #4521 → production (from dev)
+
+Commits (oldest first):
+- a1b2c3d [FIX] #4521 | ak_odoo_cpq_custom[18.0.1.4.2]: Remove hidden components from the BoM
+- d4e5f6a [FIX] #4521 | ak_odoo_cpq_custom[18.0.1.4.2]: Keep optional components visible
+
+Files (5): models/sale_order.py, views/cpq_views.xml, data/hide_rule_data.xml, __manifest__.py, security/ir.model.access.csv
+
+Other dev commits touching these files (not included):
+- 9f8e7d6 [IMP] #4498 | ...: Rule priorities  → touches models/sale_order.py
+
+1. Release these commits  2. Also include the others  3. Adjust  4. Stop
+```
+
+**Tip:** release works best when every commit carries its task ID, so always use `/aktiv-git-commit` with the task number.
+
 #### /aktiv-pms-timesheet
 
 Turns a day's work into timesheet entries: one per feature, written for a reviewer.
@@ -550,6 +598,7 @@ Every question has a recommended default, so silence doesn't stop the work. No f
                                         → message asking whether optional components count, sent to client
 11:10  /aktiv-project-doc               → context file updated for the new behaviour
 11:15  /aktiv-git-commit                → [FIX] message with Current / Expected Behaviour
+11:30  /aktiv-git-release               → #4521 released dev → staging, every task file verified against dev
 14:00  /aktiv-market-research           → "how do other CPQ tools handle configuration templates?"
 15:00  /aktiv-feature-flow              → template feature mapped as a user journey
 16:00  /aktiv-project-user-story        → US-06 Configuration Templates written for client sign-off
@@ -569,7 +618,7 @@ Every skill is named `aktiv-<area>-<skill>`, so typing `/aktiv` lists them all a
 | `market` | what other products do | `research` |
 | `module` | one module against another version or its core | `sync`, `compatible` |
 | `studio` | Odoo Online data-only modules | `module` |
-| `git` | version control | `commit` |
+| `git` | version control | `commit`, `release` |
 | `pms` | project management system | `timesheet` |
 | `client` | messages to the client | `query` |
 
