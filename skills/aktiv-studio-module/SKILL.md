@@ -24,9 +24,11 @@ Module technical name? (e.g. website_example_home)
 Target instance:
   1. Odoo Online (SaaS) — no custom Python, Import Module only
   2. Odoo.sh / self-hosted — Python allowed
-Odoo version? (e.g. 18.0)
+Odoo version? (e.g. 17.0, 18.0, 19.0, saas~18.3: Settings > About)
 ```
 On **2**, stop and recommend a normal Python module.
+
+The version decides the syntax of every record: the manifest series, `<tree>` or `<list>`, `attrs` or `invisible="..."`, cron `numbercall`, `groups_id` or `group_ids`. Check `../aktiv-project-dev/references/odoo-versions.md` and write for that version only. `references/patterns.md` is written for 18.0; adjust each shape that table marks as different.
 
 **3. What the module has to do** — multi-select, comma separated. These answers become the file plan.
 ```
@@ -109,5 +111,6 @@ Follow `references/handover.md`. Do not assert that it works — check it.
 ## References
 
 - `references/constraints.md` — what the platform enforces, and the traps that fail silently
-- `references/patterns.md` — copy-paste record shapes for every capability in step 3
+- `references/patterns.md` — copy-paste record shapes for every capability in step 3 (18.0 syntax; adjust per the version table)
+- `../aktiv-project-dev/references/odoo-versions.md` — what changes between Odoo versions
 - `references/handover.md` — verification checklist, zip command, what to tell the client

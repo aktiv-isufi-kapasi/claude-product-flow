@@ -29,7 +29,7 @@ workaround. Build the security in `ir.rule` and the front end inherits it.
 Getting this wrong is the difference between a page the client maintains and a page that
 freezes on the first save.
 
-- `t-esc` emits no branding. Not editable on the page.
+- `t-out` (and the deprecated `t-esc`) emits no branding. Not editable on the page.
 - `t-field` emits `data-oe-model` / `-id` / `-field`. The editor sends `xpath = null` for
   it, which takes `ir.ui.view.save()`'s early branch: **the record is written and the view
   is never stamped `noupdate`**. The page keeps taking module updates. Use this for every

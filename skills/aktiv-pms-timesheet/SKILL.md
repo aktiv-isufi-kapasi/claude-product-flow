@@ -64,10 +64,10 @@ Path: <repo path>
 
 ## Writing Rules
 
-- **Title:** past tense, functional, short (e.g. "Added an Archive feature for sessions", "Kept SO line taxes when editing a CPQ session").
+- **Title:** past tense, functional, short (e.g. "Added an Archive option for approval rules", "Kept order line taxes when duplicating a quotation").
 - **Description:** describe the outcome in plain language, what users see or can do now. Use bullets only when one feature has several distinct parts.
 - **No technical detail:** no method, field, model, file or variable names, no code.
-- **References are fine:** record names used to reproduce or test (e.g. `S00045`, `Session/095`, `SO0052`) and testing scope ("Tested several cases on S00046 to S00049").
+- **References are fine:** record names used to reproduce or test (e.g. `S00045`, `INV/2026/0095`, `SO0052`) and testing scope ("Tested several cases on S00046 to S00049").
 - **Testing and investigation work** gets its own entry: what was tested or analysed and what was found or fixed.
 - **Never use em dashes (`—`).** Use `:` or `-`.
 - No commit IDs, versions or branch names inside the description text. Paths go on their own `Path:` line, never in the description.

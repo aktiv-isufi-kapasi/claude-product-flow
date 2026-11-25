@@ -2,6 +2,18 @@
 
 Copy-paste starting points. Every one of these installs on Odoo Online.
 
+Written for **18.0**. For another version, change what the version table in
+`../../aktiv-project-dev/references/odoo-versions.md` marks as different. The usual ones:
+
+| Shape | 16.0 | 17.0 | 18.0 | 19.0 / 20.0 |
+|---|---|---|---|---|
+| Manifest `version` | `16.0.1.0.0` | `17.0.1.0.0` | `18.0.1.0.0` | `19.0.1.0.0` / `20.0.1.0.0` |
+| List view / `view_mode` | `<tree>` / `tree,form` | `<tree>` / `tree,form` | `<list>` / `list,form` | `<list>` / `list,form` |
+| Conditional visibility | `attrs="{'invisible': [('is_published','=',False)]}"` | `invisible="not is_published"` | same as 17 | same as 17 |
+| Repeating cron | add `<field name="numbercall">-1</field>` | add `numbercall` -1 | no `numbercall` | no `numbercall` |
+| User groups in code | `groups_id` | `groups_id` | `groups_id` | `group_ids` |
+| Group's settings section | `category_id` | `category_id` | `category_id` | `privilege_id` (a `res.groups.privilege` record) |
+
 ## Manifest
 
 The only Python in the module. A plain dict — no imports, no logic.
@@ -10,7 +22,7 @@ The only Python in the module. A plain dict — no imports, no logic.
 # -*- coding: utf-8 -*-
 {
     'name': 'Human readable name',
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.0.0',   # series must match the database: 17.0.1.0.0, 19.0.1.0.0 ...
     'category': 'Website',
     'summary': 'One line the client would recognise',
     'author': 'Your company',
@@ -204,8 +216,8 @@ a user-type group cannot be ticked on a user of a different type.
 </record>
 ```
 
-`t-field` for anything the client should edit on the page. `t-esc` only for values that
-must not be editable.
+`t-field` for anything the client should edit on the page. `t-out` only for values that
+must not be editable (`t-esc` still renders but is deprecated in every supported version).
 
 ## Free-form block, isolated
 

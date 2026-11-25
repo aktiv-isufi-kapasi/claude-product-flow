@@ -11,8 +11,8 @@ This README is the user manual: how to install, the ideas the skills share, and 
 - [Concepts](#concepts)
 - [Which skill when](#which-skill-when)
 - [Skill manual](#skill-manual)
-  - Starting work: [/aktiv-project-start](#aktiv-project-start) · [/aktiv-project-scaffold](#aktiv-project-scaffold) · [/aktiv-guide](#aktiv-guide)
-  - Doing a task: [/aktiv-project-dev](#aktiv-project-dev) · [/aktiv-market-research](#aktiv-market-research) · [/aktiv-feature-flow](#aktiv-feature-flow) · [/aktiv-module-sync](#aktiv-module-sync) · [/aktiv-module-compatible](#aktiv-module-compatible)
+  - Starting work: [/aktiv-project-start](#aktiv-project-start) · [/aktiv-project-scaffold](#aktiv-project-scaffold)
+  - Doing a task: [/aktiv-project-dev](#aktiv-project-dev) · [/aktiv-market-research](#aktiv-market-research) · [/aktiv-module-sync](#aktiv-module-sync) · [/aktiv-module-compatible](#aktiv-module-compatible)
   - Finishing work: [/aktiv-project-doc](#aktiv-project-doc) · [/aktiv-git-commit](#aktiv-git-commit) · [/aktiv-git-release](#aktiv-git-release) · [/aktiv-pms-timesheet](#aktiv-pms-timesheet)
   - Discovery and specs: [/aktiv-project-scope-analysis](#aktiv-project-scope-analysis) · [/aktiv-project-user-story](#aktiv-project-user-story)
   - Odoo Online: [/aktiv-studio-module](#aktiv-studio-module)
@@ -68,7 +68,7 @@ End of day
   → /aktiv-pms-timesheet      write up the day's work
 ```
 
-Anything you type after a command is passed to it, so `/aktiv-project-dev hide rule ignores optional components` or `/aktiv-pms-timesheet yesterday` work in one line.
+Anything you type after a command is passed to it, so `/aktiv-project-dev approval ignores discount changes` or `/aktiv-pms-timesheet yesterday` work in one line.
 
 ---
 
@@ -80,28 +80,32 @@ The skills work from a short markdown file that describes how a module works **r
 
 **New structure** (created by `/aktiv-project-scaffold`), one folder per feature:
 ```
-ak_odoo_cpq_custom/
+ak_sale_approval_custom/
   _overview.md                  module purpose, dependencies, feature list
   rules/
-    hide/
+    discount/
       context.md                what the feature does, trigger, models, edge cases
       interface.md              inputs, outputs, guarantees to other features
       tests.md                  test scenarios for QA
 ```
 
-**Old structure**: one `.md` file named after the module, e.g. `ak_odoo_cpq.md`. `README.md` and `CHANGELOG.md` are never treated as context files.
+**Old structure**: one `.md` file named after the module, e.g. `ak_sale_approval.md`. `README.md` and `CHANGELOG.md` are never treated as context files.
 
 Rules every skill follows:
 - A found context file is always confirmed with you before it is used.
 - One module, one context file. Content is never mixed across modules.
 - Context files hold current behaviour only: no history, changelog or bug-fix notes. `/aktiv-project-doc` keeps them that way.
 
+### Odoo versions
+
+Every skill works on any Odoo version, from 16.0 to 20.0 and later, including Odoo Online `saas~` releases. Skills read the version from the module's `__manifest__.py` (`18.0.1.2.0` is Odoo 18.0) and write code for that version only, asking when it isn't clear. What changes between versions (list view tag, visibility syntax, scheduled job fields, user group fields, grouped reads) is kept in one table, `skills/aktiv-project-dev/references/odoo-versions.md`, checked against the Odoo source of each version. `/aktiv-module-sync` uses it to plan a move between any two versions, and `/aktiv-module-compatible` uses it when a core module moves to a new version.
+
 ### Core compatibility marker
 
 A sub-module that extends a core module records which core version it was last made compatible with, as one line in its context file:
 
 ```
-Core compatibility: ak_odoo_cpq 18.0.5.18.11
+Core compatibility: ak_sale_approval 18.0.2.3.0
 ```
 
 `/aktiv-module-compatible` reads it to know which core changes to check. `/aktiv-module-compatible` and `/aktiv-project-doc` update it once the work is done.
@@ -123,7 +127,7 @@ Core compatibility: ak_odoo_cpq 18.0.5.18.11
 | Set up context files for a module that has none | `/aktiv-project-scaffold` |
 | Build a feature, fix a bug or make a change | `/aktiv-project-dev` |
 | Explore an idea before deciding to build it | `/aktiv-market-research` |
-| See how a decided feature fits the product, before building | `/aktiv-feature-flow` |
+| Agree how a feature works for the user before building it | `/aktiv-project-dev` (it shows the user journey first) |
 | Bring a feature from v18 to v19 (or any version to another) | `/aktiv-module-sync` |
 | Update a sub-module after its core module changed | `/aktiv-module-compatible` |
 | Record what the module does now, after development | `/aktiv-project-doc` |
@@ -134,17 +138,15 @@ Core compatibility: ak_odoo_cpq 18.0.5.18.11
 | Turn client material (SOW, spec, wireframes) into a gap analysis | `/aktiv-project-scope-analysis` |
 | Write a user story document for a customization | `/aktiv-project-user-story` |
 | Build a module for Odoo Online (no custom Python) | `/aktiv-studio-module` |
-| Remember which skill to use | `/aktiv-guide` |
 
-**`/aktiv-market-research` vs `/aktiv-feature-flow` vs `/aktiv-project-dev`**
+**`/aktiv-market-research` vs `/aktiv-project-dev`**
 - Still exploring, haven't decided: `/aktiv-market-research`
-- Decided, want to see how it fits the product: `/aktiv-feature-flow`
-- Know what to build: `/aktiv-project-dev`
+- Decided: `/aktiv-project-dev`. For a feature that changes screens, it first shows the user journey and waits for your OK. Say "flow only" to stop there.
 
-**`/aktiv-project-scope-analysis` vs `/aktiv-project-user-story` vs `/aktiv-feature-flow`**
+**`/aktiv-project-scope-analysis` vs `/aktiv-project-user-story` vs `/aktiv-project-dev`**
 - Client sent material, need to know what is standard, an app, custom or not possible: `/aktiv-project-scope-analysis`
 - A customization is agreed and needs a formal story document: `/aktiv-project-user-story`
-- Just want the user journey for a feature, in chat: `/aktiv-feature-flow`
+- Just want the user journey for a feature, in chat: `/aktiv-project-dev <feature> flow only`
 
 **`/aktiv-module-sync` vs `/aktiv-module-compatible`**
 - Same feature, another version of the same module: `/aktiv-module-sync`
@@ -171,18 +173,18 @@ Loads the context for the module you're about to work on, so Claude knows the mo
 **Example:**
 ```
 You:    /aktiv-project-start
-Claude: What is the development directory? (Press Enter to use current directory: /home/odoo/v18/ak_odoo_cpq_custom)
+Claude: What is the development directory? (Press Enter to use current directory: /home/odoo/v18/ak_sale_approval_custom)
 You:    ⏎
-Claude: What are you working on? (e.g. "hide rule", "assignment flow"). Press Enter to skip
-You:    hide rule
-Claude: Feature context: rules/hide/context.md
-        - Hides components on the CPQ screen when a rule's conditions match
-        - Runs on every attribute change in the configurator
+Claude: What are you working on? (e.g. "discount rule", "assignment flow"). Press Enter to skip
+You:    discount rule
+Claude: Feature context: rules/discount/context.md
+        - Sends a quotation for manager approval when a line discount is above the team limit
+        - Re-checks on every change to the order lines
         Found: `_overview.md` — is this the right context file? 1. Yes 2. No 3. Don't have a context file
 You:    1
 Claude: Is there a reference or dependency module I should also be aware of? 1. Yes 2. No
-You:    1 → /home/odoo/v18/ak_odoo_cpq
-Claude: ak_odoo_cpq (read-only reference): ... Context loaded. What are we working on?
+You:    1 → /home/odoo/v18/ak_sale_approval
+Claude: ak_sale_approval (read-only reference): ... Context loaded. What are we working on?
 ```
 
 **Tip:** no context file yet? Say "Don't have a context file" and run `/aktiv-project-scaffold` after.
@@ -202,26 +204,22 @@ Creates the new-structure folders and empty template files for a module. It only
 **Example:**
 ```
 You:    /aktiv-project-scaffold
-Claude: Module name and version? (e.g. ak_odoo_cpq_custom v19)
-You:    ak_odoo_cpq_custom v18
+Claude: Module name and version? (e.g. ak_sale_approval_custom v19)
+You:    ak_sale_approval_custom v18
 Claude: Does this module inherit from or depend on another module? 1. Yes 2. No
-You:    1, ak_odoo_cpq
+You:    1, ak_sale_approval
 Claude: List the features to scaffold, grouped by area.
-You:    rules: hide, block, warning
-        pricing: formula
+You:    rules: discount, margin, credit_limit
+        notifications: manager_email
 Claude: Will create:
-          ak_odoo_cpq_custom/_overview.md
-          ak_odoo_cpq_custom/rules/hide/{context,interface,tests}.md
+          ak_sale_approval_custom/_overview.md
+          ak_sale_approval_custom/rules/discount/{context,interface,tests}.md
           ... 
-          ak_odoo_cpq/interface.md
+          ak_sale_approval/interface.md
         Proceed? 1. Yes 2. Adjust
 ```
 
 **You get:** the folder tree, then next steps: fill `_overview.md`, fill `context.md` for the features you're working on, and fill `tests.md` before QA.
-
-#### /aktiv-guide
-
-Prints the quick reference of all skills and when to use each one, then asks if you want more detail on any of them. Use it when you're not sure which skill fits.
 
 ---
 
@@ -237,24 +235,24 @@ The single entry point for development. Give it anything, from one line to a ful
 1. It sorts the task into Feature, Bug, Research or Sync.
 2. It checks for gaps. For a bug, for example: expected vs actual behaviour, where it breaks, any traceback. Anything already in the loaded context is not asked again.
 3. If something is missing, it asks at most 3 one-line questions in one message. If nothing is missing, it starts straight away.
-4. Before coding, it checks what already exists (standard Odoo, installed modules, project helpers). When there is more than one sensible way to build it, it shows the options with a recommendation and waits for your pick.
-5. It does the work: features are mapped functionally first, then built. Bugs are diagnosed from both angles and a fix is proposed.
+4. It reads the module's Odoo version from `__manifest__.py` (or asks) and writes code for that version only. Before coding, it also checks what already exists (standard Odoo, installed modules, project helpers). When there is more than one sensible way to build it, it shows the options with a recommendation and waits for your pick.
+5. It does the work. For a feature that changes what users see, it first shows the user journey (where it appears, what triggers it, the steps, what changes on existing screens, the outcome) in plain language and waits for your OK before building. Add "flow only" to get just the journey, e.g. to agree it with the client. Bugs are diagnosed from both angles and a fix is proposed.
 6. It reviews its own change for optimisation (no database calls in loops, reuse instead of copies, no leftover trial code) and hands over in a few lines.
 
-**What it never does on its own:** change the manifest `version`, write migration scripts, edit core modules such as `ak_odoo_cpq` inside a client repo, commit tests written only to check the work, or update the context file (that's `/aktiv-project-doc`). Branches are brought up to date with rebase, not merge, and nothing is pushed.
+**What it never does on its own:** change the manifest `version`, write migration scripts, edit a shared core module such as `ak_sale_approval` inside a client repo, commit tests written only to check the work, or update the context file (that's `/aktiv-project-doc`). Branches are brought up to date with rebase, not merge, and nothing is pushed.
 
 **Example (thin input):**
 ```
-You:    /aktiv-project-dev hidden components still show in the BoM
-Claude: 1. Does it happen on sale order confirmation or when the BoM is generated from the configurator?
-        2. Any error, or just the wrong lines?
-You:    on SO confirm, no error
+You:    /aktiv-project-dev approved quotations can be confirmed after the discount is raised
+Claude: 1. Does it happen when the discount is changed on an existing line, or when a new line is added?
+        2. Any error, or does it just confirm?
+You:    existing line, no error
 Claude: (diagnoses, proposes the fix, implements after you agree)
 ```
 
 **Example (enough detail, no questions):**
 ```
-You:    /aktiv-project-dev When a hide rule hides a component in the CPQ screen, also exclude it from the BoM created on SO confirmation. Module ak_odoo_cpq_custom.
+You:    /aktiv-project-dev When the discount on an approved quotation is raised above the team limit, set it back to Waiting Approval and notify the sales manager. Module ak_sale_approval_custom.
 Claude: (goes straight to the functional flow and implementation)
 ```
 
@@ -275,26 +273,6 @@ A brainstorming partner for product ideas. It searches the web live (app stores,
 
 **You get:** a conversation, not a report. Every answer ends with a question to narrow or widen the search. Ask for a deep dive and it runs several targeted searches and checks each claim against more than one source.
 
-#### /aktiv-feature-flow
-
-Shows where a decided feature fits in the product, from the user's side only: no code, no model names.
-
-**Use it:** after deciding, before building, when you want to agree on the user experience first (with the team or the client).
-
-**It asks:** the directory, confirms the context file, and the feature to map.
-
-**You get:** a numbered user journey covering where the feature appears, what triggers it, what the user does step by step, what changes in existing screens, and the outcome.
-
-**Example output:**
-```
-Feature: Save configuration as template
-1. On the CPQ configurator, after choosing options, the user sees a new "Save as template" button
-2. Clicking it asks for a template name
-3. Next time, on a new quotation, "Start from template" lists saved templates
-4. Choosing one pre-fills all options; the user can still change any of them
-Changes to existing flow: the configurator's first step gains a "Start from template" choice
-```
-
 #### /aktiv-module-sync
 
 Brings a feature from one version of a module to another. It works feature-first: it understands what the feature does, then builds it the way the target version is built. It does not copy code across.
@@ -312,7 +290,7 @@ Brings a feature from one version of a module to another. It works feature-first
 **Example:**
 ```
 You:    /aktiv-module-sync
-        Source: /home/odoo/v18/ak_odoo_cpq   Target: /home/odoo/v19/ak_odoo_cpq
+        Source: /home/odoo/v18/ak_sale_approval   Target: /home/odoo/v19/ak_sale_approval
         Feature: 3f2a91c
 Claude: Plan for v19: ... Proceed?
 ```
@@ -321,7 +299,7 @@ Claude: Plan for v19: ... Proceed?
 
 Checks a sub-module against an updated core module and fixes what broke. It covers technical changes (methods it overrides that changed or were removed, new parameters) and functional ones (changed flows, new rules).
 
-**Use it:** after the core module (e.g. `ak_odoo_cpq`) is updated and a module built on it must catch up.
+**Use it:** after the core module (e.g. `ak_sale_approval`) is updated and a module built on it must catch up.
 
 **It asks:**
 1. Sub-module directory and core module directory.
@@ -333,14 +311,50 @@ Checks a sub-module against an updated core module and fixes what broke. It cove
 Compatibility Report
 ──────────────────
 Breaking:
-- Core renamed the BoM line builder: sub-module override no longer runs → re-point override
+- Core renamed the approval check: sub-module override no longer runs → re-point override
 Risk:
-- Core added a company check on rule evaluation → review multi-company rules
+- Core added a company check on approval rules → review multi-company rules
 Informational:
-- Core added rule priorities → sub-module can expose them later
+- Core added approval levels → sub-module can expose them later
 ```
 
 After the fixes, it offers to update the marker to the current core version, so the next check starts from there. Each fix is proposed and confirmed before it is written.
+
+**Example session:**
+```
+You:    /aktiv-module-compatible
+Claude: Sub-module directory? (the module that extends/depends on core)
+You:    /home/odoo/projects/helpdesk/ak_helpdesk_sla_custom
+Claude: Core module directory? (the base module that was updated)
+You:    /home/odoo/projects/helpdesk/ak_helpdesk_sla
+Claude: Found: `ak_helpdesk_sla_custom.md` for the sub-module, `ak_helpdesk_sla.md` for core. Correct?
+        1. Yes  2. No (provide path)  3. Don't have one
+You:    1
+Claude: Sub-module was last made compatible with: ak_helpdesk_sla 18.0.2.3.0
+        Core module is now at: 18.0.2.5.1
+        Check changes between these two versions?
+        1. Yes  2. No, provide a different reference  3. I'll describe changes manually
+You:    1
+Claude: Compatibility Report
+        ──────────────────
+        Breaking:
+        - Core now computes the SLA deadline in a new step: the sub-module's weekend-skip override no longer runs → move it to the new step
+        Risk:
+        - Core pauses the SLA while a ticket waits on the customer → check the sub-module's escalation emails respect the pause
+        Informational:
+        - Core added SLA priorities → the sub-module can use them for escalation later
+        How do you want to proceed?
+        1. Fix breaking issues now  2. Review all and decide per item  3. Just the report for now
+You:    1
+Claude: Breaking 1: move the weekend-skip rule to core's new deadline step, keeping the holiday calendar check. Apply?
+You:    yes
+Claude: (applies the fix, checks no override is left pointing at a removed method)
+        Update compatibility marker to ak_helpdesk_sla 18.0.2.5.1?
+        1. Yes  2. No
+You:    1
+```
+
+Then test the sub-module on a database with the new core, and commit with `/aktiv-git-commit`.
 
 ---
 
@@ -363,8 +377,8 @@ Brings the module's context file up to date after development. It describes how 
 **Example proposal:**
 ```
 I'll update these sections:
-- Hide rule: hidden components are also excluded from the BoM on SO confirmation
-- Edge cases: add optional components hidden by a rule
+- Discount rule: raising the discount on an approved quotation sends it back for approval
+- Edge cases: add discounts changed after approval
 Proceed? 1. Yes 2. No (adjust)
 ```
 
@@ -397,15 +411,15 @@ Task #<task_id>, <Task Name>
 
 **Example:**
 ```
-[FIX] #4521 | ak_odoo_cpq_custom[18.0.1.4.2]: Remove hidden components from the BoM
+[FIX] #4521 | ak_sale_approval_custom[18.0.1.4.2]: Re-check approval when the discount changes
 
 Current Behaviour:
-- Components hidden by a rule still appear in the BoM after the sale order is confirmed
+- An approved quotation can have its discount raised above the limit and still be confirmed without a new approval
 
 Expected Behaviour:
-- Components hidden by a rule are removed from the BoM as well as from the CPQ screen
+- Raising the discount above the limit on an approved quotation sends it back for manager approval
 
-Task #4521, CPQ hide rule fixes
+Task #4521, Sale approval fixes
 ```
 
 **Rules it follows:** subject under 72 characters and about the outcome. Bullets in plain language a non-developer understands, with no method, field, model or file names. No em dashes. Versions taken exactly from `__manifest__.py`. No `Co-Authored-By` or any other AI attribution line. Tests written only to check the work are left out of the commit.
@@ -444,13 +458,13 @@ After pushing, the release branch can be deleted:
 Release #4521 → production (from dev)
 
 Commits (oldest first):
-- a1b2c3d [FIX] #4521 | ak_odoo_cpq_custom[18.0.1.4.2]: Remove hidden components from the BoM
-- d4e5f6a [FIX] #4521 | ak_odoo_cpq_custom[18.0.1.4.2]: Keep optional components visible
+- a1b2c3d [FIX] #4521 | ak_sale_approval_custom[18.0.1.4.2]: Re-check approval when the discount changes
+- d4e5f6a [FIX] #4521 | ak_sale_approval_custom[18.0.1.4.2]: Keep the approval when only the delivery date changes
 
-Files (5): models/sale_order.py, views/cpq_views.xml, data/hide_rule_data.xml, __manifest__.py, security/ir.model.access.csv
+Files (5): models/sale_order.py, views/sale_order_views.xml, data/approval_rule_data.xml, __manifest__.py, security/ir.model.access.csv
 
 Other dev commits touching these files (not included):
-- 9f8e7d6 [IMP] #4498 | ...: Rule priorities  → touches models/sale_order.py
+- 9f8e7d6 [IMP] #4498 | ...: Approval levels  → touches models/sale_order.py
 
 1. Release these commits  2. Also include the others  3. Adjust  4. Stop
 ```
@@ -478,11 +492,11 @@ Turns a day's work into timesheet entries: one per feature, grouped by project w
 ```
 13 October 2026
 
-ak_odoo_cpq_custom - Task #4521, CPQ hide rule fixes
-Path: /home/odoo/cpq/cpq-parametric-configuration
+ak_sale_approval_custom - Task #4521, Sale approval fixes
+Path: /home/odoo/projects/sale_approval
 
-1. Removed hidden components from the BoM:
-Components hidden by a rule on the CPQ screen are now also left out of the BoM when the sale order is confirmed. Tested on S00046 to S00049.
+1. Re-checked approval when the discount changes:
+Raising the discount above the team limit on an approved quotation now sends it back to the sales manager for approval. Tested on S00046 to S00049.
 
 2. Investigated pricing difference on SO0052:
 Traced the difference to an outdated price list on the customer; no code change needed.
@@ -605,17 +619,18 @@ Every question has a recommended default, so silence doesn't stop the work. No f
 
 ```
 09:00  /aktiv-project-scope-analysis    → client's new SOW tab scored against what is built; 4 questions found
-09:30  /aktiv-project-start             → load ak_odoo_cpq_custom, feature "hide rule", core ak_odoo_cpq as reference
-09:35  /aktiv-project-dev hidden components still show in the BoM
+09:30  /aktiv-project-start             → load ak_sale_approval_custom, feature "discount rule", core ak_sale_approval as reference
+09:35  /aktiv-project-dev approved quotations can be confirmed after the discount is raised
                                         → 2 questions, diagnosis, fix
-11:00  /aktiv-client-query hide rule scope
-                                        → message asking whether optional components count, sent to client
+11:00  /aktiv-client-query discount limit scope
+                                        → message asking whether the limit applies per line or to the order total, sent to client
 11:10  /aktiv-project-doc               → context file updated for the new behaviour
 11:15  /aktiv-git-commit                → [FIX] message with Current / Expected Behaviour
 11:30  /aktiv-git-release               → #4521 released dev → staging, every task file verified against dev
-14:00  /aktiv-market-research           → "how do other CPQ tools handle configuration templates?"
-15:00  /aktiv-feature-flow              → template feature mapped as a user journey
-16:00  /aktiv-project-user-story        → US-06 Configuration Templates written for client sign-off
+14:00  /aktiv-market-research           → "how do other ERPs handle multi-level sales approvals?"
+15:00  /aktiv-project-dev multi-level approval, flow only
+                                        → multi-level approval mapped as a user journey
+16:00  /aktiv-project-user-story        → US-06 Multi-level Approval written for client sign-off
 18:00  /aktiv-pms-timesheet today       → entries for the day, saved to Desktop
 ```
 
@@ -628,7 +643,6 @@ Every skill is named `aktiv-<area>-<skill>`, so typing `/aktiv` lists them all a
 | Area | Covers | Skills |
 |---|---|---|
 | `project` | the module or project you're working on | `start`, `scaffold`, `dev`, `doc`, `scope-analysis`, `user-story` |
-| `feature` | one feature's place in the product | `flow` |
 | `market` | what other products do | `research` |
 | `module` | one module against another version or its core | `sync`, `compatible` |
 | `studio` | Odoo Online data-only modules | `module` |
@@ -636,9 +650,7 @@ Every skill is named `aktiv-<area>-<skill>`, so typing `/aktiv` lists them all a
 | `pms` | project management system | `timesheet` |
 | `client` | messages to the client | `query` |
 
-`/aktiv-guide` has no area because it covers all skills.
-
-Earlier names (`/start`, `/doc`, `/commit` ...) were removed. The install deletes their old links automatically on the next pull.
+Earlier names (`/start`, `/doc`, `/commit` ...) and the retired `/aktiv-guide` and `/aktiv-feature-flow` were removed. The install deletes their old links automatically on the next pull.
 
 ---
 
@@ -657,8 +669,7 @@ To add a skill:
 
 1. Create `skills/aktiv-<area>-<skill>/SKILL.md`. Start with frontmatter: `name` (same as the folder) and `description` (one sentence on what it does and when to use it; Claude Code shows it in the list and uses it to decide when the skill applies). Follow the conventions in [`CLAUDE.md`](CLAUDE.md).
 2. Add it to [Which skill when](#which-skill-when), [Skill names](#skill-names) and Contents, and write its section in the [Skill manual](#skill-manual): what it does, when to use it, what it asks, an example and what you get.
-3. Add it to `skills/aktiv-guide/SKILL.md`, which `/aktiv-guide` prints word for word.
-4. Run `./install.sh`, restart Claude Code and try it.
-5. Commit with `/aktiv-git-commit` and push. The team gets it on their next `git pull`.
+3. Run `./install.sh`, restart Claude Code and try it.
+4. Commit with `/aktiv-git-commit` and push. The team gets it on their next `git pull`.
 
 When you change how an existing skill behaves, update its manual section in this README in the same commit.

@@ -15,7 +15,7 @@ Load the module context before starting any work.
 
 2. Ask what they are working on:
    ```
-   What are you working on? (e.g. "hide rule", "assignment flow", "exclude from screen")
+   What are you working on? (e.g. "discount rule", "assignment flow", "approval email")
    Press Enter to skip
    ```
 

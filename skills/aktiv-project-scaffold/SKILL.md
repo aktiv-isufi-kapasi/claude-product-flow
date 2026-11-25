@@ -15,7 +15,7 @@ Set up the folder structure for a module — creates feature-level directories w
 
 2. Ask for the module name and version:
    ```
-   Module name and version? (e.g. ak_odoo_cpq_custom v19)
+   Module name and version? (e.g. ak_sale_approval_custom v19)
    ```
 
 3. Ask if this module depends on another:
@@ -30,9 +30,9 @@ Set up the folder structure for a module — creates feature-level directories w
    ```
    List the features to scaffold (comma separated).
    Group them by area. Example:
-     rules: hide, block, assignment, warning
-     configurator: product_visibility, exclude_from_screen
-     pricing: formula
+     rules: discount, margin, credit_limit
+     notifications: manager_email, reminder
+     reports: approval_history
    ```
    If the user is unsure, suggest based on module name if recognizable, otherwise ask them to list what they know and scaffold the rest later.
 

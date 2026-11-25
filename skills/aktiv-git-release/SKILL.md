@@ -60,19 +60,19 @@ Release one task or user story from a source branch (usually dev) to a target br
    Release #4521 → production (from dev)
 
    Commits (oldest first):
-   - a1b2c3d 2026-10-20 Dev Name  [FIX] #4521 | ak_odoo_cpq_custom[18.0.1.4.2]: Remove hidden components from the BoM
-   - d4e5f6a 2026-10-21 Dev Name  [FIX] #4521 | ak_odoo_cpq_custom[18.0.1.4.2]: Keep optional components visible
+   - a1b2c3d 2026-10-20 Dev Name  [FIX] #4521 | ak_sale_approval_custom[18.0.1.4.2]: Re-check approval when the discount changes
+   - d4e5f6a 2026-10-21 Dev Name  [FIX] #4521 | ak_sale_approval_custom[18.0.1.4.2]: Keep the approval when only the delivery date changes
 
    Files (5):
-   M ak_odoo_cpq_custom/models/sale_order.py
-   M ak_odoo_cpq_custom/views/cpq_views.xml
-   A ak_odoo_cpq_custom/data/hide_rule_data.xml
-   M ak_odoo_cpq_custom/__manifest__.py
-   M ak_odoo_cpq_custom/security/ir.model.access.csv
+   M ak_sale_approval_custom/models/sale_order.py
+   M ak_sale_approval_custom/views/sale_order_views.xml
+   A ak_sale_approval_custom/data/approval_rule_data.xml
+   M ak_sale_approval_custom/__manifest__.py
+   M ak_sale_approval_custom/security/ir.model.access.csv
 
    Already released: (none)
    Other dev commits touching these files (not included):
-   - 9f8e7d6 [IMP] #4498 | ...: Rule priorities  → touches models/sale_order.py
+   - 9f8e7d6 [IMP] #4498 | ...: Approval levels  → touches models/sale_order.py
 
    1. Release these commits
    2. Also include the other commits listed above

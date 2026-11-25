@@ -66,30 +66,30 @@ Expected Behaviour:
 **Subject line:**
 - Keep it short — one clear line, under 72 characters. Do not wrap to a second line unless absolutely unavoidable.
 - Functional first — describe the outcome, not the mechanism.
-- Good: `Allow optional components to be driven by compatibility rules`
-- Bad: `Add is_optional field to cpq.component.configuration and update apply_component_rules method`
+- Good: `Require manager approval for discounts above the team limit`
+- Bad: `Add needs_approval field to sale.order and update action_confirm method`
 
 **Bullet points:**
 - Write what the user or system can now do — not what code was touched.
 - A non-technical person should be able to read it and understand what changed.
 - Never mention: method names, field names, model names, file names, Python/JS syntax.
 - Exception: if the change is purely technical with no functional equivalent (e.g. a performance fix or internal refactor), one technical bullet is acceptable — keep it plain English.
-- Good: `Components hidden from the CPQ screen are now also removed from the BoM when a rule hides them`
-- Bad: `Updated action_done override to call super() before setting exclude_from_cpq_screen`
+- Good: `Quotations with a discount above the team limit now wait for manager approval before they can be confirmed`
+- Bad: `Updated action_confirm override to call super() before setting approval_state`
 
 **Current Behaviour / Expected Behaviour:**
 - Every commit body has both sections, in this order, so the exact issue and its resolution can be read straight from the commit.
 - `Current Behaviour:` is what the user or system sees today, before this change. For `[FIX]` / `[HOTFIX]` it is the problem itself; for `[ADD]` / `[IMP]` it is the gap or limitation.
 - `Expected Behaviour:` is what the user or system sees once this change is in. It replaces the plain bullet list: same functional rules as above.
-- Be specific enough to reproduce: name the screen, action and condition (e.g. "When a rule hides a component, it still appears in the BoM after confirming the sale order").
+- Be specific enough to reproduce: name the screen, action and condition (e.g. "When the discount on an approved quotation is raised above the limit, it can still be confirmed without a new approval").
 - `[REL]` commits may skip both sections and list the released items instead.
 - Example:
   ```
   Current Behaviour:
-  - Components hidden by a rule still appear in the BoM after the sale order is confirmed
+  - An approved quotation can have its discount raised above the limit and still be confirmed without a new approval
 
   Expected Behaviour:
-  - Components hidden by a rule are removed from the BoM as well as from the CPQ screen
+  - Raising the discount above the limit on an approved quotation sends it back for manager approval
   ```
 
 **General:**

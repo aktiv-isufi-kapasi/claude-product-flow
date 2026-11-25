@@ -39,6 +39,7 @@ Sync a feature from one version of a module to another. This is feature-based sy
 
 6. Based on both context files, plan how to implement the same feature in the target version:
    - Respect the target version's own flow and architecture
+   - Read both series from the `__manifest__.py` files, then check every row of the version table in `../aktiv-project-dev/references/odoo-versions.md` between source and target. Each row the feature touches (view tags, visibility syntax, cron fields, group fields, grouped reads) goes into the plan. For differences not in the table, check the target version's server source.
    - Only read specific code files if a concrete difference between versions needs to be resolved — do not read files speculatively
    - If something is unclear, ask the user rather than reading more code
 
@@ -49,4 +50,5 @@ Sync a feature from one version of a module to another. This is feature-based sy
 - **Feature-first, not code-first** — understand intent from the source, implement correctly in the target
 - **Context file only** — do not load the full module unless a specific file is needed to resolve a difference
 - **Accept any reference format** — commit hash, commit message, or plain-English description all work
+- **Any version to any version** — works forward or backward between any two Odoo series; never assume a specific pair
 - **Ask rather than read** — if uncertain about a version difference, ask the user instead of reading more files

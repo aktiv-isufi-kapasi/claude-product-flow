@@ -64,6 +64,7 @@ Check and resolve compatibility between a sub-module and its updated core/base m
    - New parameters or return value changes on overridden methods
    - New conditions or logic added inside methods the sub-module extends
    - Models or fields the sub-module inherits — were they modified or removed?
+   - If the core moved to a new Odoo series (first part of its version changed), check the sub-module against every row of `../aktiv-project-dev/references/odoo-versions.md` between the two series and treat each one it relies on as Breaking
 
    **Functional:**
    - New features added to core — does sub-module need to be aware or extend them?
@@ -121,7 +122,7 @@ Check and resolve compatibility between a sub-module and its updated core/base m
 Add this line to the sub-module's context `.md` file to enable auto-detection:
 
 ```
-Core compatibility: ak_odoo_cpq 18.0.5.18.11
+Core compatibility: ak_sale_approval 18.0.2.3.0
 ```
 
 This is updated automatically by `/aktiv-module-compatible` after each successful compatibility session.

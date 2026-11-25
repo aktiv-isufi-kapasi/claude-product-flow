@@ -19,7 +19,7 @@ Page: US Letter (8.5x11in), margins L/R 1.25in, T/B 1in. Tables: "Table Grid". F
 `Description:` -> one line. `UI Elements:` -> field bullets/table + annotated screenshot(s). `Behavior:` -> bullets. Keep the order Description -> UI Elements (+ screenshot) -> Behavior.
 
 ## Screenshot sources used before
-- Standard-Odoo screenshots: clean DB `std19_shots` (port 8072, no custom addons) driven via Playwright, annotated with a browser-injected red arrow+label overlay.
+- Standard-Odoo screenshots: a clean database of the project's Odoo version with no custom addons driven via Playwright, annotated with a browser-injected red arrow+label overlay.
 - Report/PDF stories: render the client PDF with `pdftoppm -png -r 150`, crop to the relevant area, annotate with `scripts/annotate.py`.
 
 ## Per-project context

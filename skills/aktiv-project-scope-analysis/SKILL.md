@@ -20,7 +20,7 @@ The output is a written analysis plus a requirement matrix, and a numbered list 
    pricing tab")  Clients send whole workbooks when one tab is the answer.
 
 2. Target platform — all three change the verdict
-   Version:  17.0 / 18.0 / 19.0 / other
+   Version:  any, e.g. 16.0 / 17.0 / 18.0 / 19.0 / 20.0 / saas~x.y
    Edition:  Community / Enterprise
    Hosting:  Odoo Online (SaaS) / Odoo.sh / on-premise
 
@@ -32,7 +32,7 @@ The output is a written analysis plus a requirement matrix, and a numbered list 
 4. Is this an existing project?
    1. Yes — there is development already done
       Upload or point me at the project content file — the module context .md
-      that /aktiv-project-doc maintains (e.g. ak_odoo_cpq.md). That file is the
+      that /aktiv-project-doc maintains (e.g. ak_sale_approval.md). That file is the
       fastest and most reliable statement of what is already built.
       Also useful if you have them: the module directory, and a live instance.
    2. No — nothing built yet
