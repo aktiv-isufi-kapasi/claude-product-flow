@@ -31,7 +31,7 @@ Names follow `aktiv-<area>-<skill>`; the areas are listed in the README's "Skill
 | Start | `/aktiv-project-start` | Load feature context, then module context, then any read-only reference modules |
 | Start | `/aktiv-project-scaffold` | Create the per-feature folder structure (`_overview.md`, `<area>/<feature>/context.md`, `interface.md`, `tests.md`) |
 | Start | `/aktiv-guide` | Print the skill reference |
-| Task | `/aktiv-project-dev` | Single entry point for feature, bug, research or sync work; asks at most 3 gap questions, then executes |
+| Task | `/aktiv-project-dev` | Single entry point for feature, bug, research or sync work; asks at most 3 gap questions, weighs implementation options, executes, then reviews for optimisation |
 | Task | `/aktiv-market-research` | Conversational research on how other products solve a problem; always searches live, never from memory |
 | Task | `/aktiv-feature-flow` | Map a decided feature into the product flow, functional only |
 | Task | `/aktiv-module-sync` | Move a feature between module versions, feature-first rather than code migration |
@@ -39,8 +39,8 @@ Names follow `aktiv-<area>-<skill>`; the areas are listed in the README's "Skill
 | Task | `/aktiv-studio-module` | Data-only module for Odoo Online (Import Module, no custom Python) |
 | Finish | `/aktiv-project-doc` | Update the module context file to current state only |
 | Finish | `/aktiv-git-commit` | Structured, functional commit message (Current Behaviour / Expected Behaviour) with module versions from `__manifest__.py` |
-| Release | `/aktiv-git-release` | Release only one task's / user story's commits from dev to a target: release branch + cherry-pick -x, staging merges, production rebases onto latest production first, then `--no-ff` merge; verifies task files match dev; never pushes |
-| Finish | `/aktiv-pms-timesheet` | Timesheet entries for a day, grouped by feature, from git commits and the session |
+| Release | `/aktiv-git-release` | Release only one task's / user story's commits from dev to a target: release branch + cherry-pick -x; staging `--no-ff` merge; production squashes to one commit, rebases onto latest production and fast-forwards (no merge commit); verifies task files match dev; never pushes |
+| Finish | `/aktiv-pms-timesheet` | Timesheet entries for a day from git commits and every Claude Code session on the machine, grouped by project (with path) and feature |
 | Client | `/aktiv-client-query` | Draft a client-facing message for the information or decisions we need |
 
 Typical flow: `/aktiv-project-start` → `/aktiv-project-dev` → `/aktiv-project-doc` → `/aktiv-git-commit`, then `/aktiv-pms-timesheet` at the end of the day.

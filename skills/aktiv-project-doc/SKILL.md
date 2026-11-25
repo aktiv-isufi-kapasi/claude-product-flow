@@ -41,6 +41,8 @@ Update the module context file after development is completed. Current state onl
      - **2** — ask: "Provide commit ID or range:" then run `git diff <ref>..HEAD`
      - **3** — ask user to describe what changed; treat that as the source of truth
 
+   - **If the range comes back empty or the commit is unknown**, the history may have been rewritten (squash or rebase). Check `git reflog` for the earlier context file commit before concluding nothing changed, and say which reference you used.
+
    - **If no commit found** (context file is new or untracked) — fall back to asking:
      ```
      What should I use to identify changes?
@@ -64,7 +66,15 @@ Update the module context file after development is completed. Current state onl
    2. No (adjust)
    ```
 
-7. On confirmation, write only the updated sections.
+7. On confirmation, write only the updated sections. Remove gotchas, known issues or limitations that this change resolved.
+
+   If the context file is committed and an earlier `/aktiv-project-doc` run in this session already made a context file commit that is not pushed, offer:
+   ```
+   Context file was already committed in this session (<hash>).
+   1. Amend that commit (one doc commit per body of work)
+   2. New commit
+   3. Leave uncommitted
+   ```
 
 8. Check if the context file has a `Core compatibility:` line:
    - **If found** — read the current core module version from its `__manifest__.py` and ask:
@@ -95,4 +105,5 @@ Update the module context file after development is completed. Current state onl
 - **Functional + technical** — what it does and how at a high level. No line-by-line code detail.
 - **Same style as existing file** — match tone, structure, depth. Do not add new sections unless genuinely needed.
 - **No changelog, no version notes, no issue references.**
+- **Only when asked** — update the context file when the user runs this skill or asks for it, never automatically after each code change.
 - **If already accurate, leave it untouched** — only update what actually changed.

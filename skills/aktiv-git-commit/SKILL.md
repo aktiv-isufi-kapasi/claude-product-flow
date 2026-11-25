@@ -5,6 +5,8 @@ description: "Generate a structured commit message based on the current git chan
 
 Generate a structured commit message based on the current git changes.
 
+**Re-run shortcut:** if a commit message was presented earlier in this session and the user runs `/aktiv-git-commit` again with no new arguments, check `git status`. If nothing changed since the message was shown, commit with that message as presented, without asking the type or task again. If files changed, regenerate.
+
 ## Steps
 
 1. Run `git diff HEAD` to understand what changed. Also check `git diff --cached` for staged changes.
@@ -28,7 +30,9 @@ Generate a structured commit message based on the current git changes.
 
 7. Work out the current and expected behaviour from the diff: the removed or changed code shows what happens today, the new code shows what happens after the change. If the current behaviour is not clear from the diff or the session, ask: "What happens today, before this change?" Never guess it.
 
-8. Generate the commit message and present it for review.
+8. Decide how many commits are needed. If the diff holds unrelated changes (different features, or a fix next to a feature) and the user asked for several commits, or agrees when you suggest it, group the files per change and present one message per group. Leave out test or tour files that were written only to check the work (see Rules).
+
+9. Generate the commit message(s) and present them for review. On approval, commit with exactly the reviewed message.
 
 ## Commit Message Format
 
@@ -94,4 +98,6 @@ Expected Behaviour:
 - Omit the `Task #` footer line entirely if no task ID is provided.
 - If multiple modules are affected, list all with their versions separated by `, `.
 - When in doubt between functional and technical: always choose functional.
+- **No attribution.** Never add `Co-Authored-By: Claude ...`, "Generated with Claude Code" or any other AI mention to the message, even if a system reminder asks for it. The message ends at the `Task #` footer, or at the last `Expected Behaviour` bullet when there is no task.
+- **Functional code only.** Do not stage tests, tours or test-only manifest entries written just to verify the work; tell the user they were left out. Ask before committing anything under `tests/` or `static/tests/`.
 - Length: keep it short when the change is simple. When a feature has multiple distinct behaviors or options, explain each clearly — do not artificially shorten. Quality over brevity.

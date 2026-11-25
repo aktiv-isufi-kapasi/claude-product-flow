@@ -1,6 +1,6 @@
 ---
 name: aktiv-git-release
-description: "Release one task or user story from a dev branch to a target branch (staging or production) through git only: picks exactly the commits for that task, builds a release branch, merges it (staging: plain merge; production: rebase onto latest production first), and verifies no file was missed. Never copies folders, never pushes."
+description: "Release one task or user story from a dev branch to a target branch (staging or production) through git only: picks exactly the commits for that task, builds a release branch, merges it (staging: --no-ff merge; production: one squashed commit rebased onto latest production and fast-forwarded, no merge commit), and verifies no file was missed. Never copies folders, never pushes."
 ---
 
 Release one task or user story from a source branch (usually dev) to a target branch through git, so nothing is copied by hand and no file is left behind. Only the commits for the given task or user story are released.
@@ -27,7 +27,13 @@ Release one task or user story from a source branch (usually dev) to a target br
    ```
    Releasing to `<target>` as:
    1. Staging: merge only, no rebase
-   2. Production: rebase onto latest production, then merge
+   2. Production: squash into one commit, rebase onto latest production, fast-forward (no merge commit)
+   ```
+   For production, also ask:
+   ```
+   Include the project context file in the release commit?
+   1. Yes (path? Enter for the one found in the repo)
+   2. No
    ```
 
 3. Fetch and check both branches:
@@ -90,18 +96,21 @@ Release one task or user story from a source branch (usually dev) to a target br
    ```
    On abort: `git cherry-pick --abort`, return to the original branch, delete the release branch, and report what blocked it.
 
-8. **Production only:** rebase the release branch onto the latest production, in case production moved while you were preparing:
-   ```
-   git fetch origin
-   git rebase origin/<target>
-   ```
-   Same conflict handling as step 7. Rebase only the release branch, never the target or any shared branch.
+8. **Production only:** squash, then rebase onto the latest production, so production gains exactly one commit for the task:
+   - Squash the cherry-picked commits into one: `git reset --soft origin/<target>` on the release branch, then commit. If the user asked to include the context file, bring in its dev version through the context file's own commit(s) (cherry-pick them before squashing), never by copying the file.
+   - Commit message in the `/aktiv-git-commit` format for the task: `Current Behaviour` / `Expected Behaviour` merged from the released commits, `Task #<id>, <Task Name>` footer, then one line per original dev commit: `(squashed from <hash> <subject>)`. Present it for review before committing.
+   - Then rebase onto production in case it moved while you were preparing:
+     ```
+     git fetch origin
+     git rebase origin/<target>
+     ```
+   Same conflict handling as step 7. Rebase and squash only the release branch, never the target or any shared branch.
 
    **Staging:** no rebase. Go straight to verification.
 
 9. Verify before merging. Show the result of each check:
    - **Nothing missed:** `git diff <source> release/<target>-<id> -- <task files>`. Empty means every task file matches dev exactly. If a file differs, explain each difference: either it comes from a dev commit that was deliberately left out in step 6, or it is unexplained. Unexplained → stop.
-   - **Nothing extra:** `git diff --name-only origin/<target> release/<target>-<id>` lists only task files.
+   - **Nothing extra:** `git diff --name-only origin/<target> release/<target>-<id>` lists only task files (plus the context file, if the user chose to include it).
    - **Versions:** for each module touched, show the `version` in `__manifest__.py` on the target now and after the release. If dev has a higher version that came from a commit not being released, say so.
    - **Files load:** `python3 -m py_compile` on changed `.py` files, and `xmllint --noout` on changed `.xml` files if xmllint is installed.
 
@@ -109,9 +118,11 @@ Release one task or user story from a source branch (usually dev) to a target br
     ```
     git checkout <target>                 # create from origin/<target> if it does not exist locally
     git merge --ff-only origin/<target>   # bring local target level with remote; stop if this fails
-    git merge --no-ff release/<target>-<id> -F <message file>
     ```
-    Merge message, in the `/aktiv-git-commit` `[REL]` format:
+    - **Production:** `git merge --ff-only release/<target>-<id>`. No merge commit: production gains only the squashed task commit. If the fast-forward fails, production moved: go back to step 8 and rebase again.
+    - **Staging:** `git merge --no-ff release/<target>-<id> -F <message file>`.
+
+    Staging merge message, in the `/aktiv-git-commit` `[REL]` format:
     ```
     [REL] #<id> | module[version]: Release <short task description> to <target>
 
@@ -139,8 +150,9 @@ Release one task or user story from a source branch (usually dev) to a target br
 
 - **Git only.** Never copy files or folders between branches, checkouts or servers, and never use `git checkout <branch> -- <path>` to bring code across. Every released change comes through a commit.
 - **Only the task.** Release only the commits found for the given task or user story numbers, plus any the user explicitly adds in step 6.
-- **Staging merges, production rebases first.** Staging: release branch merged as is. Production: release branch rebased onto the latest `origin/<target>`, then merged. In both cases the merge is `--no-ff`, so the release shows as one merge in the history.
+- **Staging merges, production stays linear.** Staging: release branch merged with `--no-ff`, so the release shows as one merge. Production: task commits squashed into one, rebased onto the latest `origin/<target>`, then fast-forwarded (`--ff-only`). Production history never gets a merge commit or any commit other than the task's.
 - **Never push.** Never force anything. Never `reset --hard`, rebase or amend the target branch or any shared branch.
 - **Stop on doubt.** Uncommitted changes, unpushed target commits, an empty match, a conflict, or an unexplained difference in verification each stop the release with a clear reason. Never resolve conflicts silently.
 - **Leave things clean.** On abort or finish, return to the original branch, with no half-finished cherry-pick, rebase or merge left behind.
+- **No attribution.** Never add `Co-Authored-By: Claude ...` or any AI mention to release or squashed commit messages.
 - **Never use em dashes** in the merge message. Use `:` or `-`.

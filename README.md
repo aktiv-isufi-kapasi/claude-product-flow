@@ -237,7 +237,11 @@ The single entry point for development. Give it anything, from one line to a ful
 1. It sorts the task into Feature, Bug, Research or Sync.
 2. It checks for gaps. For a bug, for example: expected vs actual behaviour, where it breaks, any traceback. Anything already in the loaded context is not asked again.
 3. If something is missing, it asks at most 3 one-line questions in one message. If nothing is missing, it starts straight away.
-4. It does the work: features are mapped functionally first, then built. Bugs are diagnosed from both angles and a fix is proposed.
+4. Before coding, it checks what already exists (standard Odoo, installed modules, project helpers). When there is more than one sensible way to build it, it shows the options with a recommendation and waits for your pick.
+5. It does the work: features are mapped functionally first, then built. Bugs are diagnosed from both angles and a fix is proposed.
+6. It reviews its own change for optimisation (no database calls in loops, reuse instead of copies, no leftover trial code) and hands over in a few lines.
+
+**What it never does on its own:** change the manifest `version`, write migration scripts, edit core modules such as `ak_odoo_cpq` inside a client repo, commit tests written only to check the work, or update the context file (that's `/aktiv-project-doc`). Branches are brought up to date with rebase, not merge, and nothing is pushed.
 
 **Example (thin input):**
 ```
@@ -346,14 +350,15 @@ After the fixes, it offers to update the marker to the current core version, so 
 
 Brings the module's context file up to date after development. It describes how the module works now, never what changed.
 
-**Use it:** after finishing a feature or fix, before `/aktiv-git-commit`.
+**Use it:** after finishing a feature or fix, before `/aktiv-git-commit`. Context files are only updated when you run it, never automatically after each change.
 
 **What happens:**
 1. Asks for the directory and confirms the context file.
-2. Finds the last commit that touched the context file and suggests "changes since then" as the range. You can give another commit or describe the changes yourself.
+2. Finds the last commit that touched the context file and suggests "changes since then" as the range. You can give another commit or describe the changes yourself. If commits were squashed or rebased and the range comes back empty, it checks `git reflog` before concluding nothing changed.
 3. Shows which sections it will update and how, and waits for your OK.
-4. Writes only those sections, in the file's existing style.
-5. Offers to update the `Core compatibility:` marker, or to add one if the module depends on a core module.
+4. Writes only those sections, in the file's existing style, and removes gotchas the change resolved.
+5. If it already made a context file commit earlier in the session, it offers to amend that commit instead of adding another one.
+6. Offers to update the `Core compatibility:` marker, or to add one if the module depends on a core module.
 
 **Example proposal:**
 ```
@@ -370,6 +375,10 @@ Writes a structured commit message from your changes, in the team format, so any
 **Use it:** when the work is ready to commit.
 
 **It asks:** change type (it suggests one), task ID and task name. Press Enter to skip the task. If the behaviour before the change isn't clear from the diff, it asks what happens today.
+
+**Several commits:** say `/aktiv-git-commit do multiple commits if needed` and it splits unrelated changes into one commit each.
+
+**Run it again to commit:** if it just showed you a message and nothing has changed since, running `/aktiv-git-commit` again commits that message as shown.
 
 **Format:**
 ```
@@ -399,7 +408,7 @@ Expected Behaviour:
 Task #4521, CPQ hide rule fixes
 ```
 
-**Rules it follows:** subject under 72 characters and about the outcome. Bullets in plain language a non-developer understands, with no method, field, model or file names. No em dashes. Versions taken exactly from `__manifest__.py`.
+**Rules it follows:** subject under 72 characters and about the outcome. Bullets in plain language a non-developer understands, with no method, field, model or file names. No em dashes. Versions taken exactly from `__manifest__.py`. No `Co-Authored-By` or any other AI attribution line. Tests written only to check the work are left out of the commit.
 
 #### /aktiv-git-release
 
@@ -410,16 +419,16 @@ Releases one task or user story from dev to staging or production **through git 
 **It asks:**
 1. Repository directory. It stops if there are uncommitted changes.
 2. Source branch (Enter = `dev`), target branch, and the task ID(s) or user story number(s), e.g. `4521` or `US-05`.
-3. Whether the target is staging (merge only) or production (rebase onto latest production, then merge).
+3. Whether the target is staging (merge only) or production (one squashed commit, rebased onto latest production, no merge commit). For production, also whether to include the project context file in that commit.
 
 **What happens:**
 1. **Finds the task's commits** on dev that aren't on the target yet, by the task ID in the commit message (`#4521` in the subject or `Task #4521` in the footer, as `/aktiv-git-commit` writes them) or the user story number. Commits already released are skipped.
 2. **Checks dependencies:** it lists other dev commits that touch the same files. These are the files that would otherwise go missing. You choose to include them, leave them out, or stop.
 3. **Shows the plan** (commits, files, versions) and waits for your OK.
 4. **Builds `release/<target>-<id>`** from the latest target and applies only those commits, each one recording the dev commit it came from. If there's a conflict, it stops and asks; it never resolves conflicts silently.
-5. **Production only:** rebases the release branch onto the latest production. **Staging:** no rebase.
+5. **Production only:** squashes the task commits into one, in the `/aktiv-git-commit` format, listing the dev commits it came from, then rebases it onto the latest production. **Staging:** no squash, no rebase.
 6. **Verifies:** every task file is identical to dev, no other files changed, module versions look right, and Python and XML files load.
-7. **Merges** the release branch into the target with `--no-ff` and a `[REL]` message.
+7. **Merges** the release branch into the target. Production: fast-forward only, so production gains exactly one commit for the task and no merge commit. Staging: `--no-ff` with a `[REL]` message.
 
 **You get:** the release merged on your local target branch, **not pushed**. Review it, then push yourself:
 ```
@@ -450,22 +459,27 @@ Other dev commits touching these files (not included):
 
 #### /aktiv-pms-timesheet
 
-Turns a day's work into timesheet entries: one per feature, written for a reviewer.
+Turns a day's work into timesheet entries: one per feature, grouped by project with its path, written for a reviewer. It looks at every Claude Code session on your machine, not just the current one.
 
 **Use it:** at the end of the day, or later for a past day.
 
-**How to call it:** `/aktiv-pms-timesheet`, `/aktiv-pms-timesheet today`, `/aktiv-pms-timesheet yesterday`, `/aktiv-pms-timesheet 13th october`.
+**How to call it:** `/aktiv-pms-timesheet`, `/aktiv-pms-timesheet today`, `/aktiv-pms-timesheet yesterday`, `/aktiv-pms-timesheet 13th october`, `/aktiv-pms-timesheet 20th November, also check web chat`.
 
 **What happens:**
-1. It reads your commits for that day across all branches and uses the task ID and name from the commit footers.
-2. It adds work from the session that has no commit, such as testing, investigation or data loading. It never invents work.
-3. It groups several commits for one feature into one entry, and builds each entry from the commit's Expected Behaviour.
-4. If you paste a screenshot of what you have already logged, it produces only the missing entries.
-5. It shows the entries with commit IDs so you can check them, and offers to save `~/Desktop/timesheet_<YYYY-MM-DD>.txt` as plain text without commit IDs.
+1. It reads every Claude Code session on this machine, in every project, for that day, to find which projects you worked on. If a project sits on a drive that isn't mounted, it asks you to mount it.
+2. It reads your commits for that day in each of those repositories, across all branches, and uses the task ID and name from the commit footers.
+3. It adds work from the sessions that has no commit, such as testing, investigation, releases or data loading. It never invents work.
+4. Add `also check web chat` and it also matches claude.ai and ChatGPT chat titles from your browser history to the projects.
+5. It groups entries by project, then several commits for one feature into one entry, built from the commit's Expected Behaviour. Say `only for <project>` to limit it.
+6. If you paste a screenshot of what you have already logged, it produces only the missing entries.
+7. It shows the entries with commit IDs and a `Path:` line, so you can check them and see which project each belongs to, and offers to save `~/Desktop/timesheet_<YYYY-MM-DD>.txt` as plain text without commit IDs.
 
 **Example (saved file):**
 ```
-13 October 2026 - Task #4521, CPQ hide rule fixes
+13 October 2026
+
+ak_odoo_cpq_custom - Task #4521, CPQ hide rule fixes
+Path: /home/odoo/cpq/cpq-parametric-configuration
 
 1. Removed hidden components from the BoM:
 Components hidden by a rule on the CPQ screen are now also left out of the BoM when the sale order is confirmed. Tested on S00046 to S00049.

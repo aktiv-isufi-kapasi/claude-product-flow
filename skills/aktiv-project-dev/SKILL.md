@@ -71,6 +71,24 @@ Single entry point for any development task. Accepts any input — detailed or t
    - **Research** → search live, never answer from training data, present findings
    - **Sync** → read source version behavior and technical implementation, map to target version, implement
 
+8. Before writing code for a Feature, Bug fix or Sync, weigh the options:
+   - Look for what already exists first: standard Odoo, an installed module, or a helper in the project that can be reused or extended instead of new code.
+   - When there is more than one reasonable way to build it (e.g. override vs. new hook, computed vs. stored field, server action vs. Python, extend core vs. client module), show them in one short message and recommend one:
+     ```
+     Options for <goal>:
+     1. <approach> (recommended): <why: effort, upgrade safety, performance>
+     2. <approach>: <trade-off>
+     Proceed with 1? (Enter for yes, or pick another)
+     ```
+     If only one approach makes sense, say so in one line and continue without asking.
+
+9. After implementing, review the change for optimisation before handing it over:
+   - **Database work:** no search, read or write inside a loop where one batched call works; prefetch related records; use `read_group` / `_read_group` instead of counting in Python; avoid stored computed fields that recompute on every write unless they are needed for search or grouping.
+   - **Reuse:** no duplicated logic that already exists in the module or core; call `super()` instead of copying core code.
+   - **Front end:** no repeated RPC calls in a loop; load data once per screen.
+   - **Simplicity:** remove dead code, unused imports, fields and views added during trial and error.
+   Fix what you find, and list in the hand-over any trade-off that is left (e.g. "kept stored field for grouping on the list view").
+
 ## Rules
 
 - Always validate both functional AND technical completeness before starting
@@ -80,3 +98,10 @@ Single entry point for any development task. Accepts any input — detailed or t
 - If the user gave enough detail on both sides, skip questions entirely and go straight to work
 - Keep questions short — one line each, no explanation needed
 - The goal is faster execution, not interrogation
+- **Never change the `version` in `__manifest__.py`.** The developer bumps it at commit time. If the change needs a module upgrade (new field, new data), say so in the hand-over.
+- **No migration scripts unless asked.** Unreleased development needs none. If a model change affects existing data, mention the impact instead.
+- **Core modules are hands-off in client repos.** Do not copy, sync or edit core/base modules (e.g. `ak_odoo_cpq`, `ak_odoo_cpq_ecommerce`) inside a client repository unless the user asks for that step. Comparing against core to understand compatibility is fine. Extend core through overrides that call `super()`, never by patching its internals.
+- **Tests written only to check the work stay out of commits.** Keep them in the working tree or scratchpad and tell the user they are uncommitted. Ask before committing anything under `tests/` or `static/tests/`, or test-only manifest entries.
+- **Do not update the context file on your own.** Stop at the code and a short summary; the user runs `/aktiv-project-doc` when the task is done.
+- **Bring a branch up to date with rebase, not merge or pull** (`git rebase origin/<base>`). Check first whether the branch is already pushed, since rebasing rewrites its commits. Never push.
+- **Short hand-over.** When done, say what changed and anything the user must act on (upgrade, decision, caveat) in a few lines. No long reports.
